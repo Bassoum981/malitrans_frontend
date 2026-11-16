@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ExploitationAdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminEmployeController;
 use App\Http\Controllers\AdminAuthController;
@@ -48,4 +49,18 @@ Route::middleware(['admin.auth'])->prefix('admin')->name('admin.')->group(functi
     Route::post('/employes/agents-exploitation', [AdminEmployeController::class, 'storeAgentExploitation'])->name('agents-exploitation.store');
     Route::put('/employes/agents-exploitation/{id}', [AdminEmployeController::class, 'updateAgentExploitation'])->name('agents-exploitation.update');
     Route::delete('/employes/agents-exploitation/{id}', [AdminEmployeController::class, 'destroyAgentExploitation'])->name('agents-exploitation.destroy');
+
+    // --- 6. Gestion des Véhicules (Bus) ---
+    Route::get('/vehicules/create', [ExploitationAdminController::class, 'createVehicule'])->name('vehicules.create');
+    Route::get('/vehicules', [ExploitationAdminController::class, 'indexVehicules'])->name('vehicules.index');
+    Route::post('/vehicules', [ExploitationAdminController::class, 'storeVehicule'])->name('vehicules.store');
+    Route::put('/vehicules/{id}', [ExploitationAdminController::class, 'updateVehicule'])->name('vehicules.update');
+    Route::delete('/vehicules/{id}', [ExploitationAdminController::class, 'destroyVehicule'])->name('vehicules.destroy');
+
+    // --- 7. Gestion des Affectations ---
+    Route::get('/affectations/create', [ExploitationAdminController::class, 'createAffectation'])->name('affectations.create');
+    Route::get('/affectations', [ExploitationAdminController::class, 'indexAffectations'])->name('affectations.index');
+    Route::post('/affectations', [ExploitationAdminController::class, 'storeAffectation'])->name('affectations.store');
+    Route::put('/affectations/{id}', [ExploitationAdminController::class, 'updateAffectation'])->name('affectations.update');
+    Route::delete('/affectations/{id}', [ExploitationAdminController::class, 'destroyAffectation'])->name('affectations.destroy');
 });

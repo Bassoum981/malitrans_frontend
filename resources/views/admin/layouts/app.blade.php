@@ -67,6 +67,23 @@
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
             Agents d'Exploitation
         </a>
+
+        <!-- Section Exploitation -->
+        <div class="pt-4 pb-2">
+            <p class="px-4 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500"> GESTION Exploitation</p>
+        </div>
+
+        <!-- Véhicules (Bus) -->
+        <a href="{{ route('admin.vehicules.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium {{ request()->routeIs('admin.vehicules.*') ? 'bg-zinc-900 text-zinc-50 dark:bg-zinc-800 dark:text-zinc-100 shadow-sm border border-transparent dark:border-zinc-700/50' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-200' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+            Véhicules (Bus)
+        </a>
+
+        <!-- Affectations -->
+        <a href="{{ route('admin.affectations.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium {{ request()->routeIs('admin.affectations.*') ? 'bg-zinc-900 text-zinc-50 dark:bg-zinc-800 dark:text-zinc-100 shadow-sm border border-transparent dark:border-zinc-700/50' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-200' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Affectations
+        </a>
     </nav>
 
     <!-- User profile footer / Déconnexion -->
