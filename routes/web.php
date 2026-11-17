@@ -1,6 +1,6 @@
 <?php
-
 use App\Http\Controllers\Admin\ExploitationAdminController;
+use App\Http\Controllers\Admin\LigneAdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminEmployeController;
 use App\Http\Controllers\AdminAuthController;
@@ -63,4 +63,12 @@ Route::middleware(['admin.auth'])->prefix('admin')->name('admin.')->group(functi
     Route::post('/affectations', [ExploitationAdminController::class, 'storeAffectation'])->name('affectations.store');
     Route::put('/affectations/{id}', [ExploitationAdminController::class, 'updateAffectation'])->name('affectations.update');
     Route::delete('/affectations/{id}', [ExploitationAdminController::class, 'destroyAffectation'])->name('affectations.destroy');
+
+    // --- 8. Gestion des Lignes de Transport ---
+    Route::get('/lignes', [LigneAdminController::class, 'index'])->name('lignes.index');
+    Route::get('/lignes/create', [LigneAdminController::class, 'create'])->name('lignes.create');
+    Route::post('/lignes', [LigneAdminController::class, 'store'])->name('lignes.store');
+    Route::put('/lignes/{id}', [LigneAdminController::class, 'update'])->name('lignes.update');
+    Route::delete('/lignes/{id}', [LigneAdminController::class, 'destroy'])->name('lignes.destroy');
+
 });

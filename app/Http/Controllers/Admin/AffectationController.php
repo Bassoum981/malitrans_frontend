@@ -32,14 +32,16 @@ class AffectationController extends Controller
         $affectations = $response->successful() ? $response->json() : [];
 
         // Récupération des listes pour les selects du formulaire avec le token
-        $baseApiUrl = config('services.springboot.url');
+        $baseApiUrl = config('services.springboot.url', 'http://localhost:8080/api');
         $chauffeursResponse = $this->api()->get("{$baseApiUrl}/admin/employes/chauffeurs");
         $vehiculesResponse = $this->api()->get("{$baseApiUrl}/admin/vehicules");
+        $lignesResponse = $this->api()->get("{$baseApiUrl}/admin/lignes");
 
         $chauffeurs = $chauffeursResponse->successful() ? $chauffeursResponse->json() : [];
         $vehicules = $vehiculesResponse->successful() ? $vehiculesResponse->json() : [];
+        $lignes = $lignesResponse->successful() ? $lignesResponse->json() : [];
 
-        return view('admin.affectations.index', compact('affectations', 'chauffeurs', 'vehicules'));
+        return view('admin.affectations.index', compact('affectations', 'chauffeurs', 'vehicules', 'lignes'));
     }
 
     public function store(Request $request)
@@ -48,6 +50,7 @@ class AffectationController extends Controller
             'date' => 'required|date',
             'chauffeur_id' => 'required|integer',
             'vehicule_id' => 'required|integer',
+            'ligne_id' => 'required|integer',
         ]);
 
         $response = $this->api()->post($this->baseUrl, [
@@ -55,15 +58,16 @@ class AffectationController extends Controller
             'heureDebut' => $request->heure_debut,
             'heureFin' => $request->heure_fin,
             'statut' => $request->statut ?? 'Planifiée',
-            'chauffeurId' => $request->chauffeur_id,
-            'vehiculeId' => $request->vehicule_id,
+            'chauffeurId' => (int) $request->chauffeur_id,
+            'vehiculeId' => (int) $request->vehicule_id,
+            'ligneId' => (int) $request->ligne_id,
         ]);
 
         if ($response->successful()) {
             return redirect()->route('admin.affectations.index')->with('success', 'Affectation créée avec succès.');
         }
 
-        return back()->withErrors(['error' => 'Erreur Spring Boot : ' . $response->body()]);
+        return back()->withErrors(['error' => 'Erreur Spring Boot : ' . $response->body()])->withInput();
     }
 
     public function destroy($id)
