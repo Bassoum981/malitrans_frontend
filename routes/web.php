@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\Billetterie\BilletController;
+use App\Http\Controllers\Admin\Billetterie\TitreTransportController;
 use App\Http\Controllers\Admin\ExploitationAdminController;
 use App\Http\Controllers\Admin\LigneAdminController;
 use Illuminate\Support\Facades\Route;
@@ -73,10 +74,15 @@ Route::middleware(['admin.auth'])->prefix('admin')->name('admin.')->group(functi
     Route::put('/lignes/{id}', [LigneAdminController::class, 'update'])->name('lignes.update');
     Route::delete('/lignes/{id}', [LigneAdminController::class, 'destroy'])->name('lignes.destroy');
 
-    // --- 9. Gestion de la Billetterie ---
+    // --- 9. Gestion de la Billetterie & Titres de Transport ---
     Route::prefix('billetterie')->name('billetterie.')->group(function () {
-        Route::get('/', [BilletController::class, 'index'])->name('index');
-        Route::post('/', [BilletController::class, 'store'])->name('store');
-        Route::patch('/{id}/annuler', [BilletController::class, 'annuler'])->name('annuler');
+        // Billets ponctuels
+        Route::get('/billets', [BilletController::class, 'index'])->name('billets.index');
+        Route::post('/billets', [BilletController::class, 'store'])->name('billets.store');
+        Route::patch('/billets/{id}/annuler', [BilletController::class, 'annuler'])->name('billets.annuler');
+
+        // Titres de transport (abonnements)
+        Route::get('/titres-transport', [TitreTransportController::class, 'index'])->name('titres.index');
+        Route::post('/titres-transport', [TitreTransportController::class, 'store'])->name('titres.store');
     });
 });

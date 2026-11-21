@@ -8,48 +8,49 @@ use Illuminate\Http\Request;
 
 class BilletController extends Controller
 {
-    protected MaliTransApiService $api;
-
-    public function __construct(MaliTransApiService $api)
-    {
-        $this->api = $api;
-    }
+    public function __construct(private readonly MaliTransApiService $api) {}
 
     public function index()
     {
-        $response = $this->api->get('/admin/billets');
-        $billets = $response->successful() ? $response->json() : [];
+        $billetsResp = $this->api->get('/billets');
+        $billets = $billetsResp->successful() ? $billetsResp->json() : [];
 
-        // Récupération des affectations et passagers pour le modal d'émission au guichet
         $affectationsResp = $this->api->get('/admin/affectations');
         $affectations = $affectationsResp->successful() ? $affectationsResp->json() : [];
 
         $passagersResp = $this->api->get('/admin/passagers');
         $passagers = $passagersResp->successful() ? $passagersResp->json() : [];
 
-        return view('admin.billetterie.index', compact('billets', 'affectations', 'passagers'));
+        return view('admin.billetterie.billets.index', compact(
+            'billets',
+            'affectations',
+            'passagers'
+        ));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'passagerId'        => 'required|integer',
+            'passagerId'        => 'nullable|integer',
             'affectationId'     => 'required|integer',
             'siegeId'           => 'nullable|integer',
-            'modePaiement'      => 'required|string',
+            'modePaiement'      => 'required|string|max:50',
             'referencePaiement' => 'nullable|string|max:100',
         ]);
 
-        // Cast explicite des IDs en entiers pour Spring Boot
+        $reference = !empty($validated['referencePaiement'])
+            ? trim($validated['referencePaiement'])
+            : 'BIL-' . now()->format('YmdHis') . '-' . strtoupper(bin2hex(random_bytes(2)));
+
         $payload = [
-            'passagerId'        => (int) $validated['passagerId'],
+            'passagerId'        => !empty($validated['passagerId']) ? (int) $validated['passagerId'] : null,
             'affectationId'     => (int) $validated['affectationId'],
             'siegeId'           => !empty($validated['siegeId']) ? (int) $validated['siegeId'] : null,
             'modePaiement'      => $validated['modePaiement'],
-            'referencePaiement' => $validated['referencePaiement'] ?? null,
+            'referencePaiement' => $reference,
         ];
 
-        $response = $this->api->post('/admin/billets', $payload);
+        $response = $this->api->post('/billets/acheter', $payload);
 
         if ($response->failed()) {
             $errorMsg = $response->json('message') ?? 'Erreur lors de l’émission du billet.';
@@ -57,13 +58,13 @@ class BilletController extends Controller
         }
 
         return redirect()
-            ->route('admin.billetterie.index')
-            ->with('success', 'Billet émis et validé avec succès.');
+            ->route('admin.billetterie.billets.index')
+            ->with('success', 'Billet émis avec succès (Réf: ' . $reference . ').');
     }
 
     public function annuler($id)
     {
-        $response = $this->api->patch("/admin/billets/{$id}/annuler");
+        $response = $this->api->patch("/billets/{$id}/annuler");
 
         if ($response->failed()) {
             $errorMsg = $response->json('message') ?? 'Impossible d’annuler ce billet.';
@@ -71,7 +72,7 @@ class BilletController extends Controller
         }
 
         return redirect()
-            ->route('admin.billetterie.index')
+            ->route('admin.billetterie.billets.index')
             ->with('success', 'Le billet a bien été annulé.');
     }
 }
